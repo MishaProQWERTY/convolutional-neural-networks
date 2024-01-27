@@ -90,7 +90,7 @@ Max Pooling – один из видов операции подвыборки. 
 На данный момент самым популярным языком программирования для машинного обучения является **Python**. У Python существует много удобных библиотек, которые позволяют создавать нейронные сети, а также этот язык очень удобен для работы с базами данных.
 
 **TensorFlow** – открытая программная библиотека для машинного обучения, разработанная компанией **Google** для решения задач построения и тренировки нейронной сети с целью автоматического нахождения и классификации образов, достигая качества человеческого восприятия.
-```
+```python
 import tensorflow as tf
 model = tf.keras.models.Sequential([
   tf.keras.layers.Flatten(input_shape=(28, 28)),
@@ -109,7 +109,7 @@ model.fit(x_train, y_train, epochs=5)
 
 Прежде чем отправить эту базу данных на обучение, ее надо отфильтровать от повреждённых файлов.
 
-```
+```python
 import os
 num_skipped = 0
 for folder_name in ("Cat", "Dog"):
@@ -129,7 +129,7 @@ print("Deleted %d images" % num_skipped)
 
 Загружаю базу данных в программу и привожу их в нужный вид
 
-```
+```python
 image_size = (180, 180)
 batch_size = 128
 train_ds, val_ds = tf.keras.utils.image_dataset_from_directory(
@@ -144,7 +144,7 @@ train_ds, val_ds = tf.keras.utils.image_dataset_from_directory(
 
 Следующая задача создание архитектуры модели нейросети и настройка ее параметров.
 
-```
+```python
 model = tf.keras.Sequential([
   tf.keras.layers.Rescaling(1./255),
   tf.keras.layers.Conv2D(32, 3, activation='relu'),
@@ -161,7 +161,7 @@ model = tf.keras.Sequential([
 
 Далее я настраиваю само обучение
 
-```
+```python
 model.compile(
     optimizer='adam',
     loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -170,7 +170,7 @@ model.compile(
 
 Обучаю нейросеть, используя 25 **эпох** (При обучении нейросеть 25 раз пройдется по всем картинкам базы данных)
 
-```
+```python
 epochs = 25
 callbacks = [
     keras.callbacks.ModelCheckpoint("save_at_{epoch}"),
@@ -185,12 +185,12 @@ model.fit(
 
 Тестирую нейросеть
 
-```
+```python
 model.evaluate(x_test,  y_test, verbose=2)
 ```
 
 Сохраняю нейросеть
 
-```
+```python
 model.save('modal_cat_and_dog')
 ```
