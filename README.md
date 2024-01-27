@@ -239,6 +239,8 @@ val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 Следующая задача создание архитектуры модели нейросети и настройка ее параметров.
 
 ```python
+num_classes = 2
+
 model = tf.keras.Sequential([
     tf.keras.layers.Rescaling(1./255),
     tf.keras.layers.Conv2D(32, 3, activation='relu'),
