@@ -1,4 +1,63 @@
 # computer-vision
+
+# links
+
+**О нейронных сетях**
+
+<https://habr.com/ru/articles/312450/>
+
+<https://habr.com/ru/articles/313216/>
+
+**О функциях активации**
+
+<https://ru.wikipedia.org/wiki/Функция_активации>
+
+**Языки программирования для нейронных сетей**
+
+<https://vc.ru/s/1420039-neyroseti/686392-samye-populyarnye-yazyki-programmirovaniya-v-sfere-neyrosetey>
+
+**Как создавать нейронные сети?**
+
+<https://vc.ru/u/1389654-machine-learning/588349-10-bibliotek-python-dlya-mashinnogo-obucheniya-i-iskusstvennogo-intellekta>
+
+**Как доработать нейросеть?**
+
+<https://habr.com/ru/articles/334944/>
+
+**О компьютерном зрении**
+
+<https://ru.wikipedia.org/wiki/Компьютерное_зрение>
+
+**О сверточной нейронной сети**
+
+<https://ru.wikipedia.org/wiki/Свёрточная_нейронная_сеть>
+
+<https://habr.com/ru/articles/309508/>
+
+<https://habr.com/ru/articles/348000/>
+
+<https://habr.com/ru/articles/348028/>
+
+<https://neurohive.io/ru/osnovy-data-science/glubokaya-svertochnaja-nejronnaja-set/>
+
+**TensorFlow и Keras**
+
+<https://www.tensorflow.org/overview?hl=ru>
+
+<https://www.tensorflow.org/guide/keras?hl=ru>
+
+**Image classification**
+
+<https://www.tensorflow.org/tutorials/images/classification?hl=ru>
+
+<https://keras.io/examples/vision/image_classification_from_scratch/>
+
+**Библиотека Opencv**
+
+<https://habr.com/ru/articles/519454/>
+
+# computer-vision
+
 **Компьютерное зрение**
 
 **Что такое компьютерное зрение?**
@@ -39,6 +98,7 @@
 Основная задача сверточной нейронной сети – это классификация изображений. При использовании сверточной нейронной сети можно существенно уменьшить количество обучаемых параметров и получать высокое качество классификации.
 
 # convolutional-neural-networks
+
 **Как работает сверточная нейронная сеть?**
 
 **Сверточные нейронные сети** – это специальная архитектура искусственных нейронных сетей, предложенная Яном Лекуном в 1988 году и нацеленная на эффективное распознавание образов, входит в состав технологий глубокого обучения.
@@ -55,9 +115,13 @@
 
 Фильтр двигается по всем входным матрицам (**картам**) с определённым шагом. На каждом шаге значения фильтра перемножаются с значениями части карты, на которой находится фильтр и складываются. Получившееся значение записывается на новую карту, которая передается на следующий слой.
 
+![](https://neerc.ifmo.ru/wiki/images/7/71/Convolution_example.png)
+
 **Смысл перемножения карты и фильтра?**
 
 Если фильтры будут правильно обучены, то мы на выходе получим набор признаков определенного объекта.
+
+![](https://neurohive.io/wp-content/uploads/2018/07/neironnaja-set-priznaki.png)
 
 Можно сказать, что мы получим картинку, где будут высвечены черты нужного объекта. С помощью операции свертки нейросети будет проще предположить наличие на изображении нужного объекта.
 
@@ -69,9 +133,13 @@
 
 Max Pooling – один из видов операции подвыборки. Он заключается в том, что карта (или изображение) разделяется на части, и в каждой части выделяется самое большое значение, а все остальные удаляются. Таким образом мы можем уменьшить карты признаков, сохранив сами признаки. Или можно уменьшить разрешение картинки, сохранив на ней все детали.
 
+![](https://habrastorage.org/webt/0u/ji/tm/0ujitma2xn_ndxqswj5s31je2am.png)
+
 **Полносвязный слой**
 
 Последний из типов слоев – это слой обычного перцептрона. Его цель – классификация. На вход он получает сконвертированные карты признаков, а на выходе выдаёт вероятности того, что определённые образы находятся на изображении.
+
+# create-a-neural-network
 
 **Как создать свою нейросеть и как её обучить?**
 
@@ -108,6 +176,8 @@ model.fit(x_train, y_train, epochs=5)
 
 В интернете на данный момент существует уже много готовых баз данных на любые темы, которые доступны любому человеку, поэтому я смог собрать базу данных из 24 000 фотографий собак и кошек. Эти фотографии будут данными для обучения и тестирования.
 
+![](https://user-images.githubusercontent.com/19996897/39514811-e8224404-4e15-11e8-9440-637536201f39.PNG)
+
 Прежде чем отправить эту базу данных на обучение, ее надо отфильтровать от повреждённых файлов.
 
 ```python
@@ -131,32 +201,51 @@ print("Deleted %d images" % num_skipped)
 Загружаю базу данных в программу и привожу их в нужный вид
 
 ```python
-image_size = (180, 180)
-batch_size = 128
-train_ds, val_ds = tf.keras.utils.image_dataset_from_directory(
-    "PetImages",
-    validation_split=0.2,
-    subset="both",
-    seed=1337,
-    image_size=image_size,
-    batch_size=batch_size,
-)
+data_dir = './PetImages'
+
+batch_size = 32
+img_height = 180
+img_width = 180
+
+train_ds = tf.keras.utils.image_dataset_from_directory(
+  data_dir,
+  validation_split=0.2,
+  subset="training",
+  seed=123,
+  image_size=(img_height, img_width),
+  batch_size=batch_size)
+
+val_ds = tf.keras.utils.image_dataset_from_directory(
+  data_dir,
+  validation_split=0.2,
+  subset="validation",
+  seed=123,
+  image_size=(img_height, img_width),
+  batch_size=batch_size)
+
+class_names = train_ds.class_names
+print(class_names)
+
+AUTOTUNE = tf.data.AUTOTUNE
+
+train_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
+val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
 ```
 
 Следующая задача создание архитектуры модели нейросети и настройка ее параметров.
 
 ```python
 model = tf.keras.Sequential([
-  tf.keras.layers.Rescaling(1./255),
-  tf.keras.layers.Conv2D(32, 3, activation='relu'),
-  tf.keras.layers.MaxPooling2D(),
-  tf.keras.layers.Conv2D(32, 3, activation='relu'),
-  tf.keras.layers.MaxPooling2D(),
-  tf.keras.layers.Conv2D(32, 3, activation='relu'),
-  tf.keras.layers.MaxPooling2D(),
-  tf.keras.layers.Flatten(),
-  tf.keras.layers.Dense(128, activation='relu'),
-  tf.keras.layers.Dense(2)
+    tf.keras.layers.Rescaling(1./255),
+    tf.keras.layers.Conv2D(32, 3, activation='relu'),
+    tf.keras.layers.MaxPooling2D(),
+    tf.keras.layers.Conv2D(32, 3, activation='relu'),
+    tf.keras.layers.MaxPooling2D(),
+    tf.keras.layers.Conv2D(32, 3, activation='relu'),
+    tf.keras.layers.MaxPooling2D(),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(num_classes)
 ])
 ```
 
@@ -169,58 +258,22 @@ model.compile(
     metrics=['accuracy'])
 ```
 
+Настраиваю сохранение (чтобы сохраняло каждую эпоху)
+
+```python
+checkpoint_path = "training_1/cp.ckpt"
+checkpoint_dir = os.path.dirname(checkpoint_path)
+
+cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, verbose=1)
+```
+
 Обучаю нейросеть, используя 25 **эпох** (При обучении нейросеть 25 раз пройдется по всем картинкам базы данных)
 
 ```python
-epochs = 25
-callbacks = [
-    keras.callbacks.ModelCheckpoint("save_at_{epoch}"),
-]
 model.fit(
-    train_ds,
-    epochs=epochs,
-    callbacks=callbacks,
-    validation_data=val_ds,
+  train_ds,
+  validation_data=val_ds,
+  epochs=25,
+  callbacks=[cp_callback]
 )
 ```
-
-Тестирую нейросеть
-
-```python
-model.evaluate(x_test,  y_test, verbose=2)
-```
-
-Сохраняю нейросеть
-
-```python
-model.save('modal_cat_and_dog')
-```
-
-# links
-**О нейронных сетях**
-<https://habr.com/ru/articles/312450/>
-<https://habr.com/ru/articles/313216/>
-**О функциях активации**
-<https://ru.wikipedia.org/wiki/Функция_активации>
-**Языки программирования для нейронных сетей**
-<https://vc.ru/s/1420039-neyroseti/686392-samye-populyarnye-yazyki-programmirovaniya-v-sfere-neyrosetey>
-**Как создавать нейронные сети?**
-<https://vc.ru/u/1389654-machine-learning/588349-10-bibliotek-python-dlya-mashinnogo-obucheniya-i-iskusstvennogo-intellekta>
-**Как доработать нейросеть?**
-<https://habr.com/ru/articles/334944/>
-**О компьютерном зрении**
-<https://ru.wikipedia.org/wiki/Компьютерное_зрение>
-**О сверточной нейронной сети**
-<https://ru.wikipedia.org/wiki/Свёрточная_нейронная_сеть
-<https://habr.com/ru/articles/309508/>
-<https://habr.com/ru/articles/348000/>
-<https://habr.com/ru/articles/348028/>
-<https://neurohive.io/ru/osnovy-data-science/glubokaya-svertochnaja-nejronnaja-set/>
-**TensorFlow и Keras**
-<https://www.tensorflow.org/overview?hl=ru>
-<https://www.tensorflow.org/guide/keras?hl=ru>
-**Image classification**
-<https://www.tensorflow.org/tutorials/images/classification?hl=ru>
-<https://keras.io/examples/vision/image_classification_from_scratch/>
-**Библиотека Opencv**
-<https://habr.com/ru/articles/519454/>
