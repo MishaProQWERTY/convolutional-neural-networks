@@ -90,26 +90,18 @@ Max Pooling – один из видов операции подвыборки. 
 На данный момент самым популярным языком программирования для машинного обучения является **Python**. У Python существует много удобных библиотек, которые позволяют создавать нейронные сети, а также этот язык очень удобен для работы с базами данных.
 
 **TensorFlow** – открытая программная библиотека для машинного обучения, разработанная компанией **Google** для решения задач построения и тренировки нейронной сети с целью автоматического нахождения и классификации образов, достигая качества человеческого восприятия.
-
-**import tensorflow as tf**
-
-**model = tf.keras.models.Sequential([**
-
-`  `**tf.keras.layers.Flatten(input\_shape=(28, 28)),**
-
-`  `**tf.keras.layers.Dense(128, activation='relu'),**
-
-`  `**tf.keras.layers.Dropout(0.2),**
-
-`  `**tf.keras.layers.Dense(10)**
-
-**])**
-
-**loss\_fn = tf.keras.losses.SparseCategoricalCrossentropy(from\_logits=True)**
-
-**model.compile(optimizer='adam',loss=loss\_fn,metrics=['accuracy'])**
-
-**model.fit(x\_train, y\_train, epochs=5)**
+```
+import tensorflow as tf
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(10)
+])
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+model.compile(optimizer='adam',loss=loss_fn,metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=5)
+```
 
 Прежде чем создавать архитектуру модели, я собрал базу данных для обучения.
 
@@ -117,120 +109,88 @@ Max Pooling – один из видов операции подвыборки. 
 
 Прежде чем отправить эту базу данных на обучение, ее надо отфильтровать от повреждённых файлов.
 
-**import os**
-
-**num\_skipped = 0**
-
-**for folder\_name in ("Cat", "Dog"):**
-
-`    `**folder\_path = os.path.join("PetImages", folder\_name)**
-
-`    `**for fname in os.listdir(folder\_path):**
-
-`        `**fpath = os.path.join(folder\_path, fname)**
-
-`        `**try:**
-
-`            `**fobj = open(fpath, "rb")**
-
-`            `**is\_jfif = tf.compat.as\_bytes("JFIF") in fobj.peek(10)**
-
-`        `**finally:**
-
-`            `**fobj.close()**
-
-`        `**if not is\_jfif:**
-
-`            `**num\_skipped += 1**
-
-`            `**os.remove(fpath)**
-
-**print("Deleted %d images" % num\_skipped)**
+```
+import os
+num_skipped = 0
+for folder_name in ("Cat", "Dog"):
+    folder_path = os.path.join("PetImages", folder_name)
+    for fname in os.listdir(folder_path):
+        fpath = os.path.join(folder_path, fname)
+        try:
+            fobj = open(fpath, "rb")
+            is_jfif = tf.compat.as_bytes("JFIF") in fobj.peek(10)
+        finally:
+            fobj.close()
+        if not is_jfif:
+            num_skipped += 1
+            os.remove(fpath)
+print("Deleted %d images" % num_skipped)
+```
 
 Загружаю базу данных в программу и привожу их в нужный вид
 
-**image\_size = (180, 180)**
-
-**batch\_size = 128**
-
-**train\_ds, val\_ds = tf.keras.utils.image\_dataset\_from\_directory(**
-
-`    `**"PetImages",**
-
-`    `**validation\_split=0.2,**
-
-`    `**subset="both",**
-
-`    `**seed=1337,**
-
-`    `**image\_size=image\_size,**
-
-`    `**batch\_size=batch\_size,**
-
-**)**
+```
+image_size = (180, 180)
+batch_size = 128
+train_ds, val_ds = tf.keras.utils.image_dataset_from_directory(
+    "PetImages",
+    validation_split=0.2,
+    subset="both",
+    seed=1337,
+    image_size=image_size,
+    batch_size=batch_size,
+)
+```
 
 Следующая задача создание архитектуры модели нейросети и настройка ее параметров.
 
-**model = tf.keras.Sequential([**
-
-`  `**tf.keras.layers.Rescaling(1./255),**
-
-`  `**tf.keras.layers.Conv2D(32, 3, activation='relu'),**
-
-`  `**tf.keras.layers.MaxPooling2D(),**
-
-`  `**tf.keras.layers.Conv2D(32, 3, activation='relu'),**
-
-`  `**tf.keras.layers.MaxPooling2D(),**
-
-`  `**tf.keras.layers.Conv2D(32, 3, activation='relu'),**
-
-`  `**tf.keras.layers.MaxPooling2D(),**
-
-`  `**tf.keras.layers.Flatten(),**
-
-`  `**tf.keras.layers.Dense(128, activation='relu'),**
-
-`  `**tf.keras.layers.Dense(2)**
-
-**])**
+```
+model = tf.keras.Sequential([
+  tf.keras.layers.Rescaling(1./255),
+  tf.keras.layers.Conv2D(32, 3, activation='relu'),
+  tf.keras.layers.MaxPooling2D(),
+  tf.keras.layers.Conv2D(32, 3, activation='relu'),
+  tf.keras.layers.MaxPooling2D(),
+  tf.keras.layers.Conv2D(32, 3, activation='relu'),
+  tf.keras.layers.MaxPooling2D(),
+  tf.keras.layers.Flatten(),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dense(2)
+])
+```
 
 Далее я настраиваю само обучение
 
-**model.compile(**
-
-`    `**optimizer='adam',**
-
-`    `**loss=tf.losses.SparseCategoricalCrossentropy(from\_logits=True),**
-
-`    `**metrics=['accuracy'])**
+```
+model.compile(
+    optimizer='adam',
+    loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True),
+    metrics=['accuracy'])
+```
 
 Обучаю нейросеть, используя 25 **эпох** (При обучении нейросеть 25 раз пройдется по всем картинкам базы данных)
 
-**epochs = 25**
-
-**callbacks = [**
-
-`    `**keras.callbacks.ModelCheckpoint("save\_at\_{epoch}"),**
-
-**]**
-
-**model.fit(**
-
-`    `**train\_ds,**
-
-`    `**epochs=epochs,**
-
-`    `**callbacks=callbacks,**
-
-`    `**validation\_data=val\_ds,**
-
-**)**
+```
+epochs = 25
+callbacks = [
+    keras.callbacks.ModelCheckpoint("save_at_{epoch}"),
+]
+model.fit(
+    train_ds,
+    epochs=epochs,
+    callbacks=callbacks,
+    validation_data=val_ds,
+)
+```
 
 Тестирую нейросеть
 
-**model.evaluate(x\_test,  y\_test, verbose=2)**
+```
+model.evaluate(x_test,  y_test, verbose=2)
+```
 
 Сохраняю нейросеть
 
-**model.save('modal\_cat\_and\_dog')**
+```
+model.save('modal_cat_and_dog')
+```
