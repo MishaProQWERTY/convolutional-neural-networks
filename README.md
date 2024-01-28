@@ -175,17 +175,17 @@ model.fit(x_train, y_train, epochs=5)
 **Скачать библиотеки**
 
 NumPy
-```sh
+```shell
 pip install numpy
 ```
 
 Pillow
-```sh
+```shell
 pip install pillow
 ```
 
 TensorFlow
-```sh
+```shell
 # Requires the latest pip
 pip install --upgrade pip
 
@@ -197,17 +197,17 @@ pip install tf-nightly
 ```
 
 TensorFlow_Datasets
-```sh
+```shell
 pip install -q tfds-nightly tensorflow matplotlib
 ```
 
 или
 
-```sh
+```shell
 pip install tensorflow-datasets
 ```
 
-```sh
+```shell
 pip install tfds-nightly
 ```
 
