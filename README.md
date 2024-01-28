@@ -172,7 +172,7 @@ model.compile(optimizer='adam',loss=loss_fn,metrics=['accuracy'])
 model.fit(x_train, y_train, epochs=5)
 ```
 
-Скачать библиотеки
+**Скачать библиотеки**
 
 NumPy
 ```sh
@@ -211,7 +211,7 @@ pip install tensorflow-datasets
 pip install tfds-nightly
 ```
 
-Импортировать библиотеки
+**Импортировать библиотеки**
 
 ```python
 import numpy as np
