@@ -172,6 +172,56 @@ model.compile(optimizer='adam',loss=loss_fn,metrics=['accuracy'])
 model.fit(x_train, y_train, epochs=5)
 ```
 
+Скачать библиотеки
+
+NumPy
+```sh
+pip install numpy
+```
+
+Pillow
+```sh
+pip install pillow
+```
+
+TensorFlow
+```sh
+# Requires the latest pip
+pip install --upgrade pip
+
+# Current stable release for CPU and GPU
+pip install tensorflow
+
+# Or try the preview build (unstable)
+pip install tf-nightly
+```
+
+TensorFlow_Datasets
+```sh
+pip install -q tfds-nightly tensorflow matplotlib
+```
+
+или
+
+```sh
+pip install tensorflow-datasets
+```
+
+```sh
+pip install tfds-nightly
+```
+
+Импортировать библиотеки
+
+```python
+import numpy as np
+import os
+import PIL
+import PIL.Image
+import tensorflow as tf
+import tensorflow_datasets as tfds
+```
+
 Прежде чем создавать архитектуру модели, я собрал базу данных для обучения.
 
 В интернете на данный момент существует уже много готовых баз данных на любые темы, которые доступны любому человеку, поэтому я смог собрать базу данных из 24 000 фотографий собак и кошек. Эти фотографии будут данными для обучения и тестирования.
